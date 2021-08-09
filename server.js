@@ -1,50 +1,44 @@
-// Dependencies
 const express = require("express");
 const path = require("path");
-// const db = require('./publc/assets/js/index');
-// const fs = require('fs');
-
-const notes = [];
-
-// Sets up the Express App
+const fs = require("fs");
 const app = express();
-const PORT = process.env.Port || 80;
-
-// Sets up the Express app to handle data parsing
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const PORT = process.env.Port || 3001;
+// Set up Express app to handle data parsing
+app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
+let notes = require("./db/db.json");
 
+// Routes
+app.get("/", (req, res) =>
+    res.sendFile(path.join(__dirname, "../public", "/index.html")));
 
-// DISPLAY ROUTES
-// Basic route that sends the user first to the AJAX Page
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public/index.html")));
 app.get("/notes", (req, res) =>
-    res.sendFile(path.join(__dirname, "public/notes.html"))
-);
+  res.sendFile(path.join(__dirname, "../public", "/notes.html")));
 
-//API Route
-app.get('/api/notes', (req, res) =>
-    res.json(notes));
+// Display notes
+app.get("/api/notes", (req, res) => {
+  fs.readFile("db/db.json", "utf8", function (err, data) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.json(notes);
+  });
+// Create new note
+app.post("/api/notes", (req, res) => {
+  let newNote = {
+    title: req.body.title,
+    text: req.body.text,
+  };
+  notes.push(newNote);
+  const stringifyNote = JSON.stringify(notes);
+  res.json(notes);
+  fs.writeFile("db/db.json", stringifyNote, (err) => {
+    if (err) console.log(err);
+    else {
+      console.log("Note successfully saved to db.json");
+    }});
+})
+});
 
-// res.json(notes));
-app.post('/api/notes', (req, res) => {
-    const addNote = req.body;
-    res.json(addNote);
-}
-
-// Posts Notes
-// app.post("./api/notes", (req, res) => {
-// const newNote = req.body
-// res.JSON(newNote)
-
-//     let notes = JSON.parse(fs.readFileSync(path.join(__dirname, "./public/db/db.json"), "utf8"))
-//     getNotes.push(req.body.note)
-//     fs.writeFileSync(path.join(__dirname, "../public/db/db.json"), JSON.stringify(notes))
-//     console.log("note submitted")
-//     res.send("Note success!")
-);
-
-
-// Starts the server to begin listening
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
