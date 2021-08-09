@@ -2,7 +2,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require('fs');
-// const note = require('./db/db.json');
+const note = require('./db/db.json');
 // const enterNote = require('./api/notes.js')
 
 notes = [];
@@ -19,20 +19,18 @@ app.use(express.static("public"));
 
 // DISPLAY ROUTES
 // Basic route that sends the user first to the AJAX Page
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public/index.html")));
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "../public/index.html")));
 app.get("/notes", (req, res) =>
-    res.sendFile(path.join(__dirname, "/public/notes.html"))
+    res.sendFile(path.join(__dirname, "../public/notes.html"))
 );
 
 //API Route
-app.get("/api/notes", (req, res) =>
+app.get("./api/notes.js", (req, res) => res.json(note));
 // res.json(notes));
-{
- res.sendFile(path.join(__dirname, "/public/db/db.json"))
-});
+
 
 // Posts Notes
-app.post("/api/notes", (req, res) => {
+app.post("./api/notes", (req, res) => {
 // const newNote = req.body
 // res.JSON(newNote)
 
