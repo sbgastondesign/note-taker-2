@@ -5,4 +5,4 @@ const enterNote = [
     },
   ];
 
-module.exports = "enterNote";
+module.exports = enterNote;

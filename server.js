@@ -2,10 +2,10 @@
 const express = require("express");
 const path = require("path");
 const fs = require('fs');
-const note = require('./db/db.json');
-// const enterNote = require('./api/notes.js')
+const note = require('./api/notes.js');
+const getNotes = require('./db/db.json');
 
-notes = [];
+// notes = [];
 
 // Sets up the Express App
 const app = express();
@@ -25,7 +25,7 @@ app.get("/notes", (req, res) =>
 );
 
 //API Route
-app.get("./api/notes.js", (req, res) => res.json(note));
+app.get("/api/notes", (req, res) => res.json(note));
 // res.json(notes));
 
 
@@ -35,8 +35,8 @@ app.post("./api/notes", (req, res) => {
 // res.JSON(newNote)
 
     let notes = JSON.parse(fs.readFileSync(path.join(__dirname, "./public/db/db.json"), "utf8"))
-    notes.push(req.body.note)
-    fs.writeFileSync(path.join(__dirname, "./public/db/db.json"), JSON.stringify(notes))
+    getNotes.push(req.body.note)
+    fs.writeFileSync(path.join(__dirname, "../public/db/db.json"), JSON.stringify(notes))
     console.log("note submitted")
     res.send("Note success!")
     
